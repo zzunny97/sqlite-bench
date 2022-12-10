@@ -308,10 +308,21 @@ namespace sqliteBench
       {
         benchmark_directFillRand(num_);
       }
-      else if (!strcmp(name, "fillvariablekeyvariablevalue"))
+      else if (!strcmp(name, "fillrand_variable_kv_length"))
       {
-        benchmark_fillVariableKeyVariableValue(num_, FLAGS_key_size, FLAGS_value_size, 1);
-        wal_checkpoint(db_);
+        int max_key_size = FLAGS_key_size;
+        int max_value_size = FLAGS_value_size;
+        if (max_key_size == 0)
+        {
+          fprintf(stderr, "WARNING: Max key size must be specified for 'fillvariablekeyvariablevalue' benchmark\n");
+          exit(1);
+        }
+        if (max_value_size == 0)
+        {
+          fprintf(stderr, "WARNING: Max value size must be specified for 'fillvariablekeyvariablevalue' benchmark\n");
+          exit(1);
+        }
+        benchmark_fillVariableKeyVariableValue(num_, max_key_size, max_value_size, 1);
       }
       else if (!strcmp(name, "fillrandom"))
       {

@@ -106,6 +106,93 @@ namespace sqliteBench
     /*
       variable key length and variable value length fill benchmark
     */
+    if (num_entries != num_)
+    {
+      char *msg = static_cast<char *>(malloc(sizeof(char) * 100));
+      snprintf(msg, 100, "(%d ops)", num_entries);
+      message_ = msg;
+    }
+
+    char *err_msg = NULL;
+    int status;
+
+    sqlite3_stmt *replace_stmt, *begin_trans_stmt, *end_trans_stmt;
+    const char *replace_str = "REPLACE INTO test (key, value) VALUES (?, ?)";
+    const char *begin_trans_str = "BEGIN TRANSACTION";
+    const char *end_trans_str = "END TRANSACTION";
+
+    /* Preparing sqlite3 statements */
+    status = sqlite3_prepare_v2(db_, replace_str, -1,
+                                &replace_stmt, NULL);
+    error_check(status);
+    status = sqlite3_prepare_v2(db_, begin_trans_str, -1,
+                                &begin_trans_stmt, NULL);
+    error_check(status);
+    status = sqlite3_prepare_v2(db_, end_trans_str, -1,
+                                &end_trans_stmt, NULL);
+    error_check(status);
+
+    bool transaction = (entries_per_batch > 1);
+    for (int i = 0; i < num_entries; i += entries_per_batch)
+    {
+      /* Begin write transaction */
+      if (FLAGS_transaction && transaction)
+      {
+        status = sqlite3_step(begin_trans_stmt);
+        step_error_check(status);
+        status = sqlite3_reset(begin_trans_stmt);
+        error_check(status);
+      }
+
+      /* Create and execute SQL statements */
+      for (int j = 0; j < entries_per_batch; j++)
+      {
+        const int key_size = gen_.rand_next() % max_key_size;
+        const int value_size = gen_.rand_next() % max_value_size;
+
+        const char *key = gen_.rand_gen_generate(key_size);
+        const char *value = gen_.rand_gen_generate(value_size);
+
+        /* Bind KV values into replace_stmt */
+        status = sqlite3_bind_blob(replace_stmt, 1, key, 16, SQLITE_STATIC);
+        error_check(status);
+        status = sqlite3_bind_blob(replace_stmt, 2, value,
+                                   value_size, SQLITE_STATIC);
+        error_check(status);
+
+        /* Execute replace_stmt */
+        bytes_ += value_size + strlen(key);
+        status = sqlite3_step(replace_stmt);
+        step_error_check(status);
+
+        /* Reset SQLite statement for another use */
+        status = sqlite3_clear_bindings(replace_stmt);
+        error_check(status);
+        status = sqlite3_reset(replace_stmt);
+        error_check(status);
+
+        free((void *)key);
+        free((void *)value);
+        finished_single_op();
+      }
+
+      /* End write transaction */
+      if (FLAGS_transaction && transaction)
+      {
+        status = sqlite3_step(end_trans_stmt);
+        step_error_check(status);
+        status = sqlite3_reset(end_trans_stmt);
+        error_check(status);
+      }
+    }
+
+    status = sqlite3_finalize(replace_stmt);
+    error_check(status);
+    status = sqlite3_finalize(begin_trans_stmt);
+    error_check(status);
+    status = sqlite3_finalize(end_trans_stmt);
+    error_check(status);
+    return 0;
   }
 
 }; // namespace sqliteBench
