@@ -121,7 +121,7 @@ namespace sqliteBench
 
     inline static void step_error_check(int status)
     {
-      if (status != SQLITE_OK)
+      if (status != SQLITE_OK && status != SQLITE_DONE)
       {
         std::cerr << "SQL step function error: status : " << status << std::endl;
         exit(1);
