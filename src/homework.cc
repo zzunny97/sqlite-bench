@@ -14,8 +14,34 @@ namespace sqliteBench
   {
     if (strlen(FLAGS_journal_mode) == 0)
       return 0;
+
+    const char *available_options[] = {
+        "delete",
+        "persist",
+        "truncate",
+        "memory",
+        "wal",
+        "off"};
+    bool is_valid = false;
     char fill_stmt[100];
-    snprintf(fill_stmt, sizeof(fill_stmt), "PRAGMA journal_mode = %s", FLAGS_journal_mode);
+
+    for (int i = 0; i < 6; i++)
+    {
+      if (!strcmp(FLAGS_journal_mode, available_options[i]))
+      {
+        is_valid = true;
+        snprintf(fill_stmt, sizeof(fill_stmt), "PRAGMA journal_mode = %s", FLAGS_journal_mode);
+        break;
+      }
+    }
+
+    if (!is_valid)
+    {
+      fprintf(stderr, "WARNING: %s is not valid journal mode, "
+                      "set to the default option(delete)\n",
+              FLAGS_journal_mode);
+      snprintf(fill_stmt, sizeof(fill_stmt), "PRAGMA journal_mode = delete");
+    }
     status = sqlite3_exec(db_, fill_stmt, NULL, NULL, &err_msg);
     exec_error_check(status, err_msg);
     return status;
