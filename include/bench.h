@@ -37,6 +37,9 @@ namespace sqliteBench
   // Number of read operations to do.  If negative, do FLAGS_num reads.
   extern int FLAGS_reads;
 
+  // Size of each key
+  extern int FLAGS_key_size;
+
   // Size of each value
   extern int FLAGS_value_size;
 
@@ -153,8 +156,13 @@ namespace sqliteBench
     void benchmark_run();
 
     // benchmark function
-    void benchmark_write(bool write_sync, int order, int state,
-                         int num_entries, int value_size, int entries_per_batch);
+    void benchmark_write(
+        bool write_sync,
+        int order,
+        int state,
+        int num_entries,
+        int value_size,
+        int entries_per_batch);
 
     void benchmark_read(int order, int entries_per_batch);
 
@@ -162,7 +170,11 @@ namespace sqliteBench
     int benchmark_setJournalMode();
     int benchmark_setPageSize();
     int benchmark_directFillRand(int num_);
-    int benchmark_example();
+    int benchmark_fillVariableKeyVariableValue(
+        int num_entries,
+        int max_key_size,
+        int max_value_size,
+        int entries_per_batch);
   };
 
   uint64_t now_micros(void);

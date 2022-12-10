@@ -41,6 +41,7 @@ void init()
       "readrand100K,";
   int FLAGS_num = 100000000;
   int FLAGS_reads = -1;
+  int FLAGS_key_size = 16;
   int FLAGS_value_size = 100;
   bool FLAGS_histogram = false;
   bool FLAGS_raw = false;
@@ -134,6 +135,10 @@ int main(int argc, char **argv)
     else if (sscanf(argv[i], "--reads=%d%c", &n, &junk) == 1)
     {
       FLAGS_reads = n;
+    }
+    else if (sscanf(argv[i], "--key_size=%d%c", &n, &junk) == 1)
+    {
+      FLAGS_key_size = n;
     }
     else if (sscanf(argv[i], "--value_size=%d%c", &n, &junk) == 1)
     {

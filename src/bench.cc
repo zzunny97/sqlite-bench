@@ -12,6 +12,9 @@ namespace sqliteBench
   // Number of read operations to do.  If negative, do FLAGS_num reads.
   int FLAGS_reads;
 
+  // Size of each key
+  int FLAGS_key_size;
+
   // Size of each value
   int FLAGS_value_size;
 
@@ -59,13 +62,13 @@ namespace sqliteBench
 
   void Benchmark::print_header()
   {
-    const int kKeySize = 16;
+    // const int kKeySize = 16;
     print_env();
-    fprintf(stderr, "Keys:       %d bytes each\n", kKeySize);
+    fprintf(stderr, "Keys:       %d bytes each\n", FLAGS_key_size);
     fprintf(stderr, "Values:     %d bytes each\n", FLAGS_value_size);
     fprintf(stderr, "Entries:    %d\n", num_);
     fprintf(stderr, "RawSize:    %.1f MB (estimated)\n",
-            (((int64_t)(kKeySize + FLAGS_value_size) * num_) / 1048576.0));
+            (((int64_t)(FLAGS_key_size + FLAGS_value_size) * num_) / 1048576.0));
     print_warnings();
     fprintf(stderr, "------------------------------------------------\n");
   }
@@ -305,9 +308,10 @@ namespace sqliteBench
       {
         benchmark_directFillRand(num_);
       }
-      else if (!strcmp(name, "example"))
+      else if (!strcmp(name, "fillvariablekeyvariablevalue"))
       {
-        benchmark_example();
+        benchmark_fillVariableKeyVariableValue(num_, FLAGS_key_size, FLAGS_value_size, 1);
+        wal_checkpoint(db_);
       }
       else if (!strcmp(name, "fillrandom"))
       {

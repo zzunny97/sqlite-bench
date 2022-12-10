@@ -70,10 +70,16 @@ namespace sqliteBench
   // write your own benchmark functions
   // you can add multiple functions as you like
   // you can change function name. Here example is literally example.
-  int Benchmark::benchmark_example()
+  int Benchmark::benchmark_fillVariableKeyVariableValue(
+      int num_entries,
+      int max_key_size,
+      int max_value_size,
+      int entries_per_batch)
   {
     fprintf(stderr, "example functions works!\n");
-    return 0;
+    /*
+      variable key length and variable value length fill benchmark
+    */
   }
 
 }; // namespace sqliteBench
