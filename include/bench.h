@@ -170,7 +170,7 @@ namespace sqliteBench
     int benchmark_setJournalMode();
     int benchmark_setPageSize();
     int benchmark_directFillRand(int num_);
-    int benchmark_fillVariableKeyVariableValue(
+    void benchmark_fillVariableKeyVariableValue(
         int num_entries,
         int max_key_size,
         int max_value_size,
