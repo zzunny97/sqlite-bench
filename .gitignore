@@ -35,3 +35,4 @@ build/
 *.db
 *.db-journal
 .vscode/*
+run.sh
