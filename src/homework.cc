@@ -30,7 +30,12 @@ namespace sqliteBench
       if (!strcmp(FLAGS_journal_mode, available_options[i]))
       {
         is_valid = true;
-        snprintf(fill_stmt, sizeof(fill_stmt), "PRAGMA journal_mode = %s", FLAGS_journal_mode);
+        char uppered_journal_mode[100];
+        for (int i = 0; i < strlen(FLAGS_journal_mode); i++)
+        {
+          uppered_journal_mode[i] = toupper(FLAGS_journal_mode[i]);
+        }
+        snprintf(fill_stmt, sizeof(fill_stmt), "PRAGMA journal_mode = %s", uppered_journal_mode);
         break;
       }
     }
@@ -38,9 +43,9 @@ namespace sqliteBench
     if (!is_valid)
     {
       fprintf(stderr, "WARNING: %s is not valid journal mode, "
-                      "set to the default option(delete)\n",
+                      "set to the default option (delete)\n",
               FLAGS_journal_mode);
-      snprintf(fill_stmt, sizeof(fill_stmt), "PRAGMA journal_mode = delete");
+      snprintf(fill_stmt, sizeof(fill_stmt), "PRAGMA journal_mode = DELETE");
     }
     status = sqlite3_exec(db_, fill_stmt, NULL, NULL, &err_msg);
     exec_error_check(status, err_msg);
@@ -92,17 +97,17 @@ namespace sqliteBench
     return 0;
   }
 
-  // xxx(homework)
-  // write your own benchmark functions
-  // you can add multiple functions as you like
-  // you can change function name. Here example is literally example.
-  int Benchmark::benchmark_fillVariableKeyVariableValue(
+  // fillVariableKeyVariableValue
+  // This function randomly generate variable length KV pairs,
+  // whose key size is (0, max_key_size) and
+  // whose value size is (0, max_value_size)
+  // Also it supports batch option as is benchmark_write function
+  void Benchmark::benchmark_fillVariableKeyVariableValue(
       int num_entries,
       int max_key_size,
       int max_value_size,
       int entries_per_batch)
   {
-    fprintf(stderr, "example functions works!\n");
     /*
       variable key length and variable value length fill benchmark
     */
@@ -192,7 +197,6 @@ namespace sqliteBench
     error_check(status);
     status = sqlite3_finalize(end_trans_stmt);
     error_check(status);
-    return 0;
   }
 
 }; // namespace sqliteBench
