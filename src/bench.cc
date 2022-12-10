@@ -428,7 +428,7 @@ namespace sqliteBench
     /* Change locking mode to exclusive and create tables/index for database */
     const char *locking_stmt = "PRAGMA locking_mode = EXCLUSIVE";
     const char *create_stmt =
-        "CREATE TABLE test (key blob, value blob, PRIMARY KEY (key))";
+        "CREATE TABLE test (key blob, value blob)";
     const char *stmt_array[] = {locking_stmt, create_stmt, NULL};
     int stmt_array_length = sizeof(stmt_array) / sizeof(char *);
     for (int i = 0; i < stmt_array_length; i++)
