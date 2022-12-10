@@ -2,6 +2,8 @@
 
 namespace sqliteBench
 {
+  int status;
+  char *err_msg = NULL;
 
   // #1. Write a code for setting the journal mode in the SQLite database engine
   // [Requirement]
@@ -10,9 +12,13 @@ namespace sqliteBench
   // (3) This function returns status (int data type) of sqlite API function
   int Benchmark::benchmark_setJournalMode()
   {
-
-    // please fill this function
-    return 0;
+    if (strlen(FLAGS_journal_mode) == 0)
+      return 0;
+    char fill_stmt[100];
+    snprintf(fill_stmt, sizeof(fill_stmt), "PRAGMA journal_mode = %s", FLAGS_journal_mode);
+    status = sqlite3_exec(db_, fill_stmt, NULL, NULL, &err_msg);
+    exec_error_check(status, err_msg);
+    return status;
   }
 
   // #2. Write a code for setting page size in the SQLite database engine
@@ -22,9 +28,12 @@ namespace sqliteBench
   // (3) This function is called at benchmark_open() in bench.cc
   int Benchmark::benchmark_setPageSize()
   {
-
-    // please fill this function
-    return 0;
+    char *err_msg = NULL;
+    char fill_stmt[100];
+    snprintf(fill_stmt, sizeof(fill_stmt), "PRAGMA page_size = %d", FLAGS_page_size);
+    status = sqlite3_exec(db_, fill_stmt, NULL, NULL, &err_msg);
+    exec_error_check(status, err_msg);
+    return status;
   }
 
   // #3. Write a code for insert function (direct SQL execution mode)
@@ -37,18 +46,23 @@ namespace sqliteBench
   // (5) This function is called at benchmark_open() in bench.cc
   int Benchmark::benchmark_directFillRand(int num_)
   {
-    //      DO NOT MODIFY HERE     //
-    const char *value = gen_.rand_gen_generate(FLAGS_value_size);
-    char key[100];
-    const int k = gen_.rand_next() % num_;
+    for (int i = 0; i < num_; i++)
+    {
+      //      DO NOT MODIFY HERE     //
+      const char *value = gen_.rand_gen_generate(FLAGS_value_size);
+      char key[100];
+      const int k = gen_.rand_next() % num_;
 
-    snprintf(key, sizeof(key), "%016d", k);
-    char fill_stmt[100];
-    snprintf(fill_stmt, sizeof(fill_stmt), "INSERT INTO test values (%s , x'%x')", key, value);
-    ////////////////////////////////
+      snprintf(key, sizeof(key), "%016d", k);
+      char fill_stmt[100];
+      snprintf(fill_stmt, sizeof(fill_stmt), "INSERT INTO test values (%s , x'%x')", key, value);
+      ////////////////////////////////
 
-    // execute SQL statement
-    // please fill this function
+      // fprintf(stderr, "%s, %x\n", key, value);
+      status = sqlite3_exec(db_, fill_stmt, NULL, NULL, &err_msg);
+      finished_single_op();
+      exec_error_check(status, err_msg);
+    }
     return 0;
   }
 
