@@ -36,20 +36,19 @@ namespace sqliteBench
           uppered_journal_mode[i] = toupper(FLAGS_journal_mode[i]);
         }
         snprintf(fill_stmt, sizeof(fill_stmt), "PRAGMA journal_mode = %s", uppered_journal_mode);
-        break;
+        status = sqlite3_exec(db_, fill_stmt, NULL, NULL, &err_msg);
+        exec_error_check(status, err_msg);
+        return status;
       }
     }
 
-    if (!is_valid)
-    {
-      fprintf(stderr, "WARNING: %s is not valid journal mode, "
-                      "set to the default option (delete)\n",
-              FLAGS_journal_mode);
-      snprintf(fill_stmt, sizeof(fill_stmt), "PRAGMA journal_mode = DELETE");
-    }
+    fprintf(stderr, "WARNING: %s is not valid journal mode, "
+                    "set to the default option (delete)\n",
+            FLAGS_journal_mode);
+    snprintf(fill_stmt, sizeof(fill_stmt), "PRAGMA journal_mode = DELETE");
     status = sqlite3_exec(db_, fill_stmt, NULL, NULL, &err_msg);
     exec_error_check(status, err_msg);
-    return status;
+    return -2;
   }
 
   // #2. Write a code for setting page size in the SQLite database engine
