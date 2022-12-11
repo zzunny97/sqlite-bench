@@ -314,7 +314,7 @@ namespace sqliteBench
         const char *value = gen_.rand_gen_generate(value_size);
 
         /* Bind KV values into replace_stmt */
-        status = sqlite3_bind_blob(replace_stmt, 1, key, 16, SQLITE_STATIC);
+        status = sqlite3_bind_blob(replace_stmt, 1, key, key_size, SQLITE_STATIC);
         error_check(status);
         status = sqlite3_bind_blob(replace_stmt, 2, value,
                                    value_size, SQLITE_STATIC);
