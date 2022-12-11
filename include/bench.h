@@ -177,7 +177,7 @@ namespace sqliteBench
         int num_entries,
         int value_size,
         int entries_per_batch);
-    void benchmark_fillVariableKeyVariableValue(
+    void benchmark_fillVariableKeyValueLength(
         int num_entries,
         int max_key_size,
         int max_value_size,
