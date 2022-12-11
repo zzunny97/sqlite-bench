@@ -61,6 +61,11 @@ namespace sqliteBench
   {
     char *err_msg = NULL;
     char fill_stmt[100];
+    if (FLAGS_page_size <= 0)
+    {
+      fprintf(stderr, "ERROR: Page size should be more than 0\n");
+      exit(1);
+    }
     snprintf(fill_stmt, sizeof(fill_stmt), "PRAGMA page_size = %d", FLAGS_page_size);
     status = sqlite3_exec(db_, fill_stmt, NULL, NULL, &err_msg);
     exec_error_check(status, err_msg);
