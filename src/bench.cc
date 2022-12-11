@@ -308,6 +308,14 @@ namespace sqliteBench
       {
         benchmark_directFillRand(num_);
       }
+      else if (!strcmp(name, "pingpong_mixed"))
+      {
+        benchmark_pingpong_mixed(write_sync, SEQUENTIAL, FRESH, num_, FLAGS_value_size, 1);
+      }
+      else if (!strcmp(name, "pingpong_mixed_batch"))
+      {
+        benchmark_pingpong_mixed(write_sync, SEQUENTIAL, FRESH, num_, FLAGS_value_size, 1);
+      }
       else if (!strcmp(name, "fillrand_variable_kv_length"))
       {
         int max_key_size = FLAGS_key_size;
