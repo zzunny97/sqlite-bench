@@ -330,7 +330,7 @@ namespace sqliteBench
           fprintf(stderr, "WARNING: Max value size must be specified for 'fillvariablekeyvariablevalue' benchmark\n");
           exit(1);
         }
-        benchmark_fillrand_variable_key_value_length(num_, max_key_size, max_value_size, 1);
+        benchmark_fillrand_variable_kv_length(num_, max_key_size, max_value_size, 1);
       }
       else if (!strcmp(name, "fillrand_variable_kv_length_batch"))
       {
@@ -346,7 +346,7 @@ namespace sqliteBench
           fprintf(stderr, "WARNING: Max value size must be specified for 'fillvariablekeyvariablevalue' benchmark\n");
           exit(1);
         }
-        benchmark_fillrand_variable_key_value_length(num_, max_key_size, max_value_size, 1000);
+        benchmark_fillrand_variable_kv_length(num_, max_key_size, max_value_size, 1000);
       }
       else if (!strcmp(name, "fillrandom"))
       {

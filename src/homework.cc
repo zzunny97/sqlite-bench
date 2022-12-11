@@ -257,7 +257,7 @@ namespace sqliteBench
   // whose value size is (0, max_value_size)
   // Also it supports batch option as is benchmark_write function
   void
-  Benchmark::benchmark_fillrand_variable_key_value_length(
+  Benchmark::benchmark_fillrand_variable_kv_length(
       int num_entries,
       int max_key_size,
       int max_value_size,
